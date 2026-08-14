@@ -1,0 +1,1 @@
+Based on the uploaded index(3).html Retro Radio Player. The Android wrapper packages the modified HTML as a native APK asset.

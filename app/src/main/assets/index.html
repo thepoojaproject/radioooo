@@ -1,0 +1,508 @@
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retro Radio Player</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  /* ===== Retro Windows 98 Theme ===== */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "MS Sans Serif", "Tahoma", sans-serif;
+  }
+
+  body {
+    background: #c0c0c0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+
+  .player {
+    background: #d4d0c8;
+    border: 2px solid #808080;
+    border-top-color: #fff;
+    border-left-color: #fff;
+    width: 380px;
+    padding: 12px;
+    box-shadow: inset -1px -1px #808080, inset 1px 1px #fff;
+  }
+
+  .title-bar {
+    background: linear-gradient(to right, #000080, #0000a0);
+    color: white;
+    font-weight: bold;
+    padding: 3px 8px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .title-bar .controls {
+    display: flex;
+    gap: 4px;
+  }
+
+  .title-bar button {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #fff;
+    background: #c0c0c0;
+    box-shadow: inset -1px -1px #808080, inset 1px 1px #fff;
+    cursor: pointer;
+  }
+
+  .station-info {
+    border: 2px solid #808080;
+    border-top-color: #fff;
+    border-left-color: #fff;
+    background: #d4d0c8;
+    padding: 10px;
+    margin-top: 8px;
+    text-align: center;
+  }
+
+  .station-info img {
+    width: 220px;
+    height: auto;
+    margin-bottom: 6px;
+    border: 1px solid #808080;
+  }
+
+  .station-name {
+    font-size: 13px;
+    background: #fff;
+    padding: 4px;
+    border: 1px solid #808080;
+    margin-bottom: 6px;
+  }
+
+  select {
+    width: 100%;
+    font-size: 13px;
+    padding: 3px;
+    border: 2px solid #808080;
+    border-top-color: #fff;
+    border-left-color: #fff;
+    background: #fff;
+    color: black;
+  }
+
+  button {
+    background: #d4d0c8;
+    border: 2px solid #808080;
+    border-top-color: #fff;
+    border-left-color: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 5px 10px;
+  }
+
+  button:active {
+    border: 2px solid #fff;
+    border-top-color: #808080;
+    border-left-color: #808080;
+  }
+
+  .controls-panel {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 8px;
+  }
+
+  .visualizer {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 30px;
+    margin: 8px 0;
+    gap: 2px;
+  }
+
+  .bar {
+    width: 4px;
+    background: #000080;
+    transition: height 0.15s;
+  }
+
+  .progress-container {
+    height: 12px;
+    background: #c0c0c0;
+    border: 2px solid #808080;
+    border-top-color: #fff;
+    border-left-color: #fff;
+    margin: 8px 0;
+  }
+
+  .progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #000080;
+  }
+
+  .volume-control {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 6px;
+    background: #fff;
+    border: 1px solid #808080;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px;
+    height: 16px;
+    background: #c0c0c0;
+    border: 2px solid #808080;
+    border-top-color: #fff;
+    border-left-color: #fff;
+    cursor: pointer;
+  }
+
+  .status {
+    background: #fff;
+    border: 2px solid #808080;
+    border-top-color: #fff;
+    border-left-color: #fff;
+    padding: 4px;
+    font-size: 12px;
+    margin-top: 8px;
+  }
+
+  footer {
+    text-align: center;
+    font-size: 12px;
+    margin-top: 8px;
+    color: #000;
+  }
+
+/* ===== Login Screen ===== */
+#loginScreen {
+  position: fixed;
+  inset: 0;
+  background: #c0c0c0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.login-box {
+  width: min(360px, calc(100vw - 28px));
+  background: #d4d0c8;
+  border: 2px solid #808080;
+  border-top-color: #fff;
+  border-left-color: #fff;
+  box-shadow: inset -1px -1px #808080, inset 1px 1px #fff;
+  padding: 10px;
+}
+.login-title {
+  background: linear-gradient(to right, #000080, #0000a0);
+  color: #fff;
+  font-weight: bold;
+  padding: 5px 8px;
+  font-size: 13px;
+}
+.login-body {
+  padding: 14px 10px 8px;
+}
+.login-body label {
+  display: block;
+  font-size: 13px;
+  margin: 9px 0 4px;
+}
+.login-body input {
+  width: 100%;
+  padding: 7px;
+  font-size: 13px;
+  border: 2px solid #808080;
+  border-top-color: #808080;
+  border-left-color: #808080;
+  background: #fff;
+}
+.login-btn {
+  width: 100%;
+  margin-top: 14px;
+}
+.login-error {
+  min-height: 18px;
+  color: #b00000;
+  font-size: 12px;
+  margin-top: 8px;
+}
+#appContent {
+  display: none;
+}
+
+
+/* ===== Professional Mobile Branding ===== */
+.station-info img {
+  display: block;
+  width: 86px;
+  height: 86px;
+  object-fit: contain;
+  margin: 2px auto 10px;
+  border: 0;
+  background: transparent;
+}
+
+@media (max-width: 480px) {
+  body {
+    height: 100dvh;
+    min-height: 100dvh;
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .player {
+    width: 100%;
+    min-height: 100dvh;
+    border: 0;
+    padding: 10px;
+    box-shadow: none;
+  }
+
+  .title-bar {
+    padding: 7px 9px;
+    font-size: 13px;
+  }
+
+  .station-info {
+    margin-top: 10px;
+    padding: 14px 12px;
+  }
+
+  .station-info img {
+    width: 58px;
+    height: 58px;
+    margin: 0 auto 10px;
+    border: 0;
+    border-radius: 12px;
+  }
+
+  .station-name {
+    font-size: 14px;
+    padding: 7px;
+  }
+
+  .controls-panel {
+    margin-top: 12px;
+    gap: 7px;
+  }
+
+  .controls-panel button {
+    min-width: 46px;
+    min-height: 42px;
+    padding: 7px 9px;
+  }
+
+  .visualizer {
+    height: 34px;
+    margin: 12px 0;
+  }
+
+  .progress-container {
+    margin: 10px 0;
+  }
+
+  footer {
+    padding-bottom: max(4px, env(safe-area-inset-bottom));
+  }
+}
+
+</style>
+</head>
+<body>
+
+
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-title">🔐 Neelam Radio Player - Login</div>
+    <div class="login-body">
+      <label for="loginUser">Login</label>
+      <input id="loginUser" type="text" autocomplete="username" placeholder="Enter login">
+
+      <label for="loginPassword">Password</label>
+      <input id="loginPassword" type="password" autocomplete="current-password" placeholder="Enter password">
+
+      <button class="login-btn" id="loginBtn">Log In</button>
+      <div class="login-error" id="loginError"></div>
+    </div>
+  </div>
+</div>
+
+<div id="appContent">
+<div class="player">
+  <div class="title-bar">
+    <span>🎙️ Retro Radio Player</span>
+    <div class="controls">
+      <button title="Minimize"></button>
+      <button title="Maximize"></button>
+      <button title="Close"></button>
+    </div>
+  </div>
+
+  <div class="station-info">
+    <img src=" https://i.ibb.co/M5jBWByV/image.png " alt="Radio Logo">
+    <div class="station-name" id="stationName">Loading stations...</div>
+    <select id="stationSelect"></select>
+  </div>
+
+  <div class="controls-panel">
+    <button id="prevBtn"><i class="fas fa-backward"></i></button>
+    <button id="playBtn"><i class="fas fa-play"></i></button>
+    <button id="pauseBtn" disabled><i class="fas fa-pause"></i></button>
+    <button id="stopBtn" disabled><i class="fas fa-stop"></i></button>
+    <button id="nextBtn"><i class="fas fa-forward"></i></button>
+  </div>
+
+  <div class="visualizer" id="visualizer"></div>
+
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <div class="volume-control">
+    <span><i class="fas fa-volume-up"></i></span>
+    <input type="range" id="volume" min="0" max="1" step="0.1" value="0.5">
+  </div>
+
+  <div class="status" id="status">Ready to play...</div>
+
+  <footer>Made with ❤️ for Neelam</footer>
+</div>
+</div>
+
+<script>
+
+const loginScreen = document.getElementById('loginScreen');
+const appContent = document.getElementById('appContent');
+const loginUser = document.getElementById('loginUser');
+const loginPassword = document.getElementById('loginPassword');
+const loginBtn = document.getElementById('loginBtn');
+const loginError = document.getElementById('loginError');
+
+function doLogin() {
+  if (loginUser.value.trim() === 'Neelam' && loginPassword.value === 'Neelam143') {
+    loginScreen.style.display = 'none';
+    appContent.style.display = 'block';
+    loginError.textContent = '';
+  } else {
+    loginError.textContent = 'Invalid login or password.';
+  }
+}
+
+loginBtn.onclick = doLogin;
+loginPassword.addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+
+const audio = new Audio();
+const playBtn = document.getElementById('playBtn');
+const pauseBtn = document.getElementById('pauseBtn');
+const stopBtn = document.getElementById('stopBtn');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const stationSelect = document.getElementById('stationSelect');
+const stationName = document.getElementById('stationName');
+const progressBar = document.getElementById('progressBar');
+const visualizer = document.getElementById('visualizer');
+const volumeSlider = document.getElementById('volume');
+const status = document.getElementById('status');
+
+const stations = [
+  { url: "https://eu8.fastcast4u.com/proxy/clyedupq?mp=%2F1", name: "Classic Rock FM" },
+  { url: "https://stream-uk1.radioparadise.com/aac-320", name: "Radio Paradise" },
+  { url: "https://us1.internet-radio.com/proxy/abcd?mp=/stream", name: "Chillout Lounge" },
+  { url: "https://icecast.rtl.fr/rtl-1-44-128", name: "RTL Radio" }
+];
+
+stations.forEach((s, i) => {
+  const opt = document.createElement("option");
+  opt.value = i;
+  opt.textContent = s.name;
+  stationSelect.appendChild(opt);
+});
+
+let currentStation = 0;
+let visualizerInterval;
+
+for (let i = 0; i < 25; i++) {
+  const bar = document.createElement('div');
+  bar.className = 'bar';
+  visualizer.appendChild(bar);
+}
+const bars = document.querySelectorAll('.bar');
+
+function startVisualizer() {
+  stopVisualizer();
+  visualizerInterval = setInterval(() => {
+    bars.forEach(bar => {
+      bar.style.height = Math.random() * 30 + 2 + "px";
+    });
+  }, 100);
+}
+
+function stopVisualizer() {
+  clearInterval(visualizerInterval);
+  bars.forEach(bar => bar.style.height = "3px");
+}
+
+playBtn.onclick = () => {
+  audio.src = stations[stationSelect.value].url;
+  audio.play().then(() => {
+    status.textContent = "Playing: " + stations[stationSelect.value].name;
+    playBtn.disabled = true;
+    pauseBtn.disabled = false;
+    stopBtn.disabled = false;
+    startVisualizer();
+  });
+};
+
+pauseBtn.onclick = () => {
+  audio.pause();
+  status.textContent = "Paused";
+  playBtn.disabled = false;
+  pauseBtn.disabled = true;
+  stopVisualizer();
+};
+
+stopBtn.onclick = () => {
+  audio.pause();
+  audio.src = "";
+  playBtn.disabled = false;
+  pauseBtn.disabled = true;
+  stopBtn.disabled = true;
+  status.textContent = "Stopped";
+  stopVisualizer();
+};
+
+prevBtn.onclick = () => {
+  currentStation = (currentStation - 1 + stations.length) % stations.length;
+  stationSelect.value = currentStation;
+  playBtn.click();
+};
+
+nextBtn.onclick = () => {
+  currentStation = (currentStation + 1) % stations.length;
+  stationSelect.value = currentStation;
+  playBtn.click();
+};
+
+volumeSlider.oninput = e => {
+  audio.volume = e.target.value;
+};
+</script>
+
+</body>
+</html>
